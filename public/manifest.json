@@ -1,0 +1,27 @@
+{
+  "id": "based-meme-maker",
+  "name": "Based Meme Maker",
+  "short_name": "Meme Maker",
+  "description": "Create, customize and share memes instantly on Base.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0A0E1A",
+  "theme_color": "#0A0E1A",
+  "icons": [
+    {
+      "src": "icon.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "developer": {
+    "name": "Hotpunk",
+    "url": "https://basedmememaker.vercel.app"
+  },
+  "webapp": {
+    "url": "https://basedmememaker.vercel.app",
+    "allowed_origins": [
+      "https://basedmememaker.vercel.app"
+    ]
+  }
+}
