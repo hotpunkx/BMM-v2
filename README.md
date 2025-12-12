@@ -1,5 +1,10 @@
 # Antigravity Meme Maker 🔵
 
+> [!NOTE]
+> This is a **Vite** React application (Client-Side Rendering).
+> Use `npm run dev` to start locally.
+> Do NOT use Next.js commands.
+
 ![Meme Maker Banner](public/og.png)
 
 A fully on-chain meme generator built on **Base**. Create memes, store them permanently on IPFS, and mint them as NFTs.
