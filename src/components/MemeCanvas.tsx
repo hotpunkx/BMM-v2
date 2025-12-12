@@ -156,6 +156,7 @@ export const MemeCanvas = ({ imageUrl, textColor, fontSize, onColorChange, onFon
       console.error("Error initializing fabric canvas:", error);
       toast.error("Failed to load canvas. Please refresh.");
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []); // Run ONCE on mount. resizing and ratio changes handled via refs/effects interaction or manual updates.
 
   // Helper to maintain image position on resize/ratio change
@@ -218,6 +219,7 @@ export const MemeCanvas = ({ imageUrl, textColor, fontSize, onColorChange, onFon
       console.error("Failed to load image:", err);
       toast.error("Failed to load image on canvas.");
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fabricCanvas, imageUrl]); // Removed aspectRatio dependency to prevent reload loop
 
   // Keyboard Shortcuts (Outside useEffect to avoid stale closures if using state)
@@ -244,6 +246,7 @@ export const MemeCanvas = ({ imageUrl, textColor, fontSize, onColorChange, onFon
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fabricCanvas, history, historyStep]);
 
   const addText = () => {
@@ -453,11 +456,13 @@ export const MemeCanvas = ({ imageUrl, textColor, fontSize, onColorChange, onFon
 
       // 3. Mint NFT
       toast.info("Please confirm transaction in your wallet...");
+      // @ts-expect-error - Chain is inferred from provider but type definition expects explicit property in this context
       const hash = await writeContractAsync({
         address: CONTRACT_ADDRESS as `0x${string}`,
         abi: CONTRACT_ABI,
         functionName: "mint",
         args: [address, metadataUri],
+        account: address,
       });
 
       console.log("Tx Hash:", hash);

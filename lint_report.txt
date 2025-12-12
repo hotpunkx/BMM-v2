@@ -1,0 +1,42 @@
+
+> vite_react_shadcn_ts@0.0.0 lint
+> eslint .
+
+
+D:\CURSOR tut\Based-meme-maker-main - V2\src\components\MemeCanvas.tsx
+  159:6  warning  React Hook useEffect has missing dependencies: 'aspectRatio', 'canvasColor', and 'saveState'. Either include them or remove the dependency array  react-hooks/exhaustive-deps
+  221:6  warning  React Hook useEffect has missing dependencies: 'aspectRatio' and 'canvasColor'. Either include them or remove the dependency array                react-hooks/exhaustive-deps
+  247:6  warning  React Hook useEffect has missing dependencies: 'handleRedo' and 'handleUndo'. Either include them or remove the dependency array                  react-hooks/exhaustive-deps
+
+D:\CURSOR tut\Based-meme-maker-main - V2\src\components\ui\badge.tsx
+  29:17  warning  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+
+D:\CURSOR tut\Based-meme-maker-main - V2\src\components\ui\button.tsx
+  47:18  warning  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+
+D:\CURSOR tut\Based-meme-maker-main - V2\src\components\ui\command.tsx
+  24:11  error  An interface declaring no members is equivalent to its supertype  @typescript-eslint/no-empty-object-type
+
+D:\CURSOR tut\Based-meme-maker-main - V2\src\components\ui\form.tsx
+  129:10  warning  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+
+D:\CURSOR tut\Based-meme-maker-main - V2\src\components\ui\navigation-menu.tsx
+  111:3  warning  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+
+D:\CURSOR tut\Based-meme-maker-main - V2\src\components\ui\sidebar.tsx
+  636:3  warning  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+
+D:\CURSOR tut\Based-meme-maker-main - V2\src\components\ui\sonner.tsx
+  27:19  warning  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+
+D:\CURSOR tut\Based-meme-maker-main - V2\src\components\ui\textarea.tsx
+  5:18  error  An interface declaring no members is equivalent to its supertype  @typescript-eslint/no-empty-object-type
+
+D:\CURSOR tut\Based-meme-maker-main - V2\src\components\ui\toggle.tsx
+  37:18  warning  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+
+D:\CURSOR tut\Based-meme-maker-main - V2\tailwind.config.ts
+  93:13  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+✖ 13 problems (3 errors, 10 warnings)
+
