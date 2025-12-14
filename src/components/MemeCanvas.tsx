@@ -495,7 +495,7 @@ export const MemeCanvas = ({ imageUrl, textColor, fontSize, onColorChange, onFon
           clickText="Upload New"
         />
         <Button onClick={downloadMeme} className="btn-donate gap-2">
-          <Download className="w-4 h-4" /> Download
+          <Download className="w-4 h-4" />
         </Button>
         <Button
           onClick={handleMint}
@@ -512,7 +512,7 @@ export const MemeCanvas = ({ imageUrl, textColor, fontSize, onColorChange, onFon
               {isConfirmingTx ? "Confirming..." : (
                 <>
                   <Coins className="w-4 h-4" />
-                  Make it Based
+                  Mint on Base
                 </>
               )}
             </>
