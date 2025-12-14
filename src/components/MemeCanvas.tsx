@@ -5,6 +5,7 @@ import { Download, Type, Image, Trash2, Undo2, Redo2, Square, ArrowRight, ImageP
 import { toast } from "sonner";
 import { Slider } from "./ui/slider";
 import { Label } from "./ui/label";
+import { ThreeDButton } from "./ui/ThreeDButton";
 import { useAccount, useWriteContract, useWaitForTransactionReceipt } from "wagmi";
 import { CONTRACT_ADDRESS, CONTRACT_ABI } from "../constants/contract";
 import { uploadToIPFS, uploadFileToIPFS } from "../utils/ipfs";
@@ -482,20 +483,24 @@ export const MemeCanvas = ({ imageUrl, textColor, fontSize, onColorChange, onFon
       <input ref={fileInputRef} type="file" accept="image/*" onChange={handleImageUpload} className="hidden" />
 
       {/* Top Controls: Image & Download */}
-      <div className="flex justify-center gap-2 flex-wrap">
-        <Button onClick={addImage} variant="outline" className="gap-2">
-          <Image className="w-4 h-4" /> Add Sticker
-        </Button>
-        <Button onClick={() => setUploadedImage(null)} variant="outline" className="gap-2">
-          <ImagePlus className="w-4 h-4" /> Upload New
-        </Button>
-        <Button onClick={downloadMeme} variant="default" className="gap-2 bg-gradient-to-r from-blue-600 to-cyan-500 hover:shadow-lg transition-all border-0">
+      <div className="flex justify-center gap-2 flex-wrap pb-4">
+        <ThreeDButton
+          label="Add Photo"
+          onClick={addImage}
+          clickText="Add Photo"
+        />
+        <ThreeDButton
+          label="Upload New"
+          onClick={() => setUploadedImage(null)}
+          clickText="Upload New"
+        />
+        <Button onClick={downloadMeme} className="btn-donate gap-2">
           <Download className="w-4 h-4" /> Download
         </Button>
         <Button
           onClick={handleMint}
           disabled={isMinting}
-          className="gap-2 font-bold bg-gradient-to-r from-blue-700 via-blue-600 to-blue-700 hover:from-blue-600 hover:to-blue-600 border border-blue-400/30 shadow-[0_0_20px_rgba(37,99,235,0.3)] hover:shadow-[0_0_30px_rgba(37,99,235,0.5)] transition-all transform hover:-translate-y-0.5"
+          className="btn-donate gap-2"
         >
           {isMinting ? (
             <>
@@ -513,11 +518,8 @@ export const MemeCanvas = ({ imageUrl, textColor, fontSize, onColorChange, onFon
             </>
           )}
         </Button>
-        <Button onClick={handleShare} disabled={isSharing} variant="default" className="gap-2 bg-gradient-to-r from-purple-600 to-pink-500 hover:shadow-lg transition-all border-0">
-          {isSharing ? <Loader2 className="w-4 h-4 animate-spin" /> : <Share2 className="w-4 h-4" />}
-          Share Link
-        </Button>
-        <Button onClick={handleBaseShare} disabled={isSharing} variant="default" className="gap-2 bg-blue-500 hover:bg-blue-600 hover:shadow-lg transition-all border-0 text-white">
+
+        <Button onClick={handleBaseShare} disabled={isSharing} className="btn-donate btn-share-base gap-2 text-white">
           {isSharing ? <Loader2 className="w-4 h-4 animate-spin" /> : <div className="w-4 h-4 rounded-full bg-white/20 flex items-center justify-center">🔵</div>}
           Share to Base
         </Button>
