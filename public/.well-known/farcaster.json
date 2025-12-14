@@ -1,8 +1,8 @@
 {
   "accountAssociation": {
     "header": "eyJmaWQiOjE1NDE1NzEsInR5cGUiOiJjdXN0b2R5Iiwia2V5IjoiMHhlY2I3OWIzQURiODVFYzNiNDRBNUM3ZGREM2Q1OTM1NDk4ZDY5OTI1In0",
-    "payload": "eyJkb21haW4iOiJiYXNlZG1lbWUudmVyY2VsLmFwcCJ9",
-    "signature": "TRYVXo+HXZzrKHGpmQJAhAvY0WzIrg41mOVcPArXg8BOrZpGssr0LC9qKlgaGrBqMDoWlPxfR5PpK4hu/ASGnBs="
+    "payload": "eyJkb21haW4iOiJtZW1lbWludGVyLnZlcmNlbC5hcHAifQ",
+    "signature": "PCzW8Amy/C+bozheJoKmmFMND1IZXisDLG03eb86sNlmR6l/aMmUzTuChcR0t6TKmk3bHaaJ+wHRlX3pXiGV2Bs="
   },
   "baseBuilder": {
     "ownerAddress": "0x661F1de7bf43ed4DF1C72A03781276eC18771a21"
@@ -10,9 +10,9 @@
   "miniapp": {
     "version": "1",
     "name": "Based Meme Maker",
-    "homeUrl": "https://basedmeme.vercel.app/",
-    "iconUrl": "https://basedmeme.vercel.app/icon.png",
-    "splashImageUrl": "https://basedmeme.vercel.app/splash.png",
+    "homeUrl": "https://mememinter.vercel.app/",
+    "iconUrl": "https://mememinter.vercel.app/icon.png",
+    "splashImageUrl": "https://mememinter.vercel.app/splash.png",
     "splashBackgroundColor": "#0A0E1A",
     "subtitle": "Make memes easily",
     "description": "Create, customize and share memes instantly on Baseapp.",
@@ -25,7 +25,7 @@
     "tagline": "Make your based memes",
     "ogTitle": "Based Meme Maker",
     "ogDescription": "Create based memes instantly.",
-    "ogImageUrl": "https://basedmeme.vercel.app/og.png",
+    "ogImageUrl": "https://mememinter.vercel.app/og.png",
     "noindex": true
   }
 }
