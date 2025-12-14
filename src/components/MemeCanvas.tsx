@@ -492,6 +492,27 @@ export const MemeCanvas = ({ imageUrl, textColor, fontSize, onColorChange, onFon
         <Button onClick={downloadMeme} variant="default" className="gap-2 bg-gradient-to-r from-blue-600 to-cyan-500 hover:shadow-lg transition-all border-0">
           <Download className="w-4 h-4" /> Download
         </Button>
+        <Button
+          onClick={handleMint}
+          disabled={isMinting}
+          className="gap-2 font-bold bg-gradient-to-r from-blue-700 via-blue-600 to-blue-700 hover:from-blue-600 hover:to-blue-600 border border-blue-400/30 shadow-[0_0_20px_rgba(37,99,235,0.3)] hover:shadow-[0_0_30px_rgba(37,99,235,0.5)] transition-all transform hover:-translate-y-0.5"
+        >
+          {isMinting ? (
+            <>
+              <Loader2 className="w-4 h-4 animate-spin" />
+              Preparing...
+            </>
+          ) : (
+            <>
+              {isConfirmingTx ? "Confirming..." : (
+                <>
+                  <Coins className="w-4 h-4" />
+                  Make it Based
+                </>
+              )}
+            </>
+          )}
+        </Button>
         <Button onClick={handleShare} disabled={isSharing} variant="default" className="gap-2 bg-gradient-to-r from-purple-600 to-pink-500 hover:shadow-lg transition-all border-0">
           {isSharing ? <Loader2 className="w-4 h-4 animate-spin" /> : <Share2 className="w-4 h-4" />}
           Share Link
@@ -609,29 +630,7 @@ export const MemeCanvas = ({ imageUrl, textColor, fontSize, onColorChange, onFon
       </div>
 
       {/* Mint Button Area */}
-      <div className="flex justify-center pt-2">
-        <Button
-          onClick={handleMint}
-          disabled={isMinting}
-          className="w-full max-w-sm h-12 text-lg font-bold bg-gradient-to-r from-blue-700 via-blue-600 to-blue-700 hover:from-blue-600 hover:to-blue-600 border border-blue-400/30 shadow-[0_0_20px_rgba(37,99,235,0.3)] hover:shadow-[0_0_30px_rgba(37,99,235,0.5)] transition-all transform hover:-translate-y-0.5"
-        >
-          {isMinting ? (
-            <>
-              <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-              Preparing...
-            </>
-          ) : (
-            <>
-              {isConfirmingTx ? "Confirming..." : (
-                <>
-                  <Coins className="w-5 h-5 mr-2" />
-                  Mint on Base
-                </>
-              )}
-            </>
-          )}
-        </Button>
-      </div>
+
 
       <p className="text-center text-xs text-slate-500 animate-pulse">
         Double-click text to edit • Drag to move

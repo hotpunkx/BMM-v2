@@ -47,12 +47,12 @@ export const uploadToIPFS = async (file: File) => {
         // 2. Create & Upload Metadata
         const metadata = {
             name: "Based Meme",
-            description: "Created with Antigravity Meme Maker on Base",
+            description: "Created with Based Meme Maker on Base",
             image: imageUrl,
             external_url: "https://mememakerbased.vercel.app/",
             attributes: [
                 { trait_type: "Creator", value: "Antigravity User" },
-                { trait_type: "App", value: "Antigravity Meme Maker" }
+                { trait_type: "App", value: "Based Meme Maker" }
             ]
         };
 
