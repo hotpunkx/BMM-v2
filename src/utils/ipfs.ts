@@ -51,7 +51,7 @@ export const uploadToIPFS = async (file: File) => {
             image: imageUrl,
             external_url: "https://mememakerbased.vercel.app/",
             attributes: [
-                { trait_type: "Creator", value: "Antigravity User" },
+                { trait_type: "Creator", value: "Hotpunk" },
                 { trait_type: "App", value: "Based Meme Maker" }
             ]
         };

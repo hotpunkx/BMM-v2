@@ -48,7 +48,7 @@ export const ImageUpload = ({ onImageUpload }: ImageUploadProps) => {
   };
 
   return (
-    <div className="antigravity-float w-full max-w-md mx-auto relative group">
+    <div className="based-float w-full max-w-md mx-auto relative group">
       <div
         className="absolute -inset-0.5 bg-gradient-to-r from-blue-600 to-cyan-500 rounded-2xl blur opacity-30 group-hover:opacity-60 transition duration-500"
       ></div>

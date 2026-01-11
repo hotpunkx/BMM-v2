@@ -85,12 +85,12 @@ All colors MUST be HSL.
   }
 }
 
-.antigravity-float {
+.based-float {
   animation: float 6s ease-in-out infinite;
 }
 
 
-/* Uiverse Button Styles - Adapted for Antigravity */
+/* Uiverse Button Styles - Adapted for based-meme-maker */
 .animated-button {
   position: relative;
   display: flex;
@@ -234,7 +234,7 @@ All colors MUST be HSL.
   background: radial-gradient(circle, rgba(63, 94, 251, 1) 0%, rgba(20, 15, 16, 1) 100%) !important;
 }
 
-/* From Uiverse.io by MuhammadHasann - Adapted for Antigravity */
+/* From Uiverse.io by MuhammadHasann - Adapted for based-meme-maker */
 .container-button {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
