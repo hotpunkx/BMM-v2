@@ -482,34 +482,35 @@ export const MemeCanvas = ({ imageUrl, textColor, fontSize, onColorChange, onFon
     <div className="space-y-2 max-w-4xl mx-auto animate-in fade-in duration-500 pb-20">
       <input ref={fileInputRef} type="file" accept="image/*" onChange={handleImageUpload} className="hidden" />
 
-      {/* Top Controls: Image & Download */}
-      <div className="flex justify-center gap-2 pb-2 overflow-x-auto">
-        <Button onClick={addImage} className="btn-donate btn-orange gap-2 text-white shrink-0">
-          <ImagePlus className="w-4 h-4" />
+      {/* Top Controls: Image & Download - Mobile Optimized */}
+      <div className="flex justify-center gap-1.5 pb-2 overflow-x-auto px-1 snap-x no-scrollbar">
+        <Button onClick={addImage} size="sm" className="btn-donate btn-orange gap-1.5 text-white shrink-0 px-3 h-9 text-xs sm:text-sm">
+          <ImagePlus className="w-3.5 h-3.5" />
           Add
         </Button>
-        <Button onClick={() => setUploadedImage(null)} className="btn-donate btn-orange gap-2 text-white shrink-0">
-          <Image className="w-4 h-4" />
+        <Button onClick={() => setUploadedImage(null)} size="sm" className="btn-donate btn-orange gap-1.5 text-white shrink-0 px-3 h-9 text-xs sm:text-sm">
+          <Image className="w-3.5 h-3.5" />
           New
         </Button>
-        <Button onClick={downloadMeme} className="btn-donate gap-2 text-white">
-          <Download className="w-4 h-4" />
+        <Button onClick={downloadMeme} size="sm" className="btn-donate gap-1.5 text-white shrink-0 px-3 h-9">
+          <Download className="w-3.5 h-3.5" />
         </Button>
         <Button
           onClick={handleMint}
           disabled={isMinting}
-          className="btn-donate gap-2 text-white"
+          size="sm"
+          className="btn-donate gap-1.5 text-white shrink-0 px-3 h-9 text-xs sm:text-sm"
         >
           {isMinting ? (
             <>
-              <Loader2 className="w-4 h-4 animate-spin" />
+              <Loader2 className="w-3.5 h-3.5 animate-spin" />
               Preparing...
             </>
           ) : (
             <>
               {isConfirmingTx ? "Confirming..." : (
                 <>
-                  <Coins className="w-4 h-4" />
+                  <Coins className="w-3.5 h-3.5" />
                   Mint on Base
                 </>
               )}
@@ -517,8 +518,8 @@ export const MemeCanvas = ({ imageUrl, textColor, fontSize, onColorChange, onFon
           )}
         </Button>
 
-        <Button onClick={handleBaseShare} disabled={isSharing} className="btn-donate btn-share-base gap-2 text-white">
-          {isSharing ? <Loader2 className="w-4 h-4 animate-spin" /> : <div className="w-4 h-4 rounded-full bg-white/20 flex items-center justify-center">🔵</div>}
+        <Button onClick={handleBaseShare} disabled={isSharing} size="sm" className="btn-donate btn-share-base gap-1.5 text-white shrink-0 px-3 h-9 text-xs sm:text-sm">
+          {isSharing ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <div className="w-3.5 h-3.5 rounded-full bg-white/20 flex items-center justify-center text-[10px]">🔵</div>}
           Share
         </Button>
       </div>
