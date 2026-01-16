@@ -1,9 +1,37 @@
 import { useState } from "react";
 import { MemeGenerator } from "@/components/MemeGenerator";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
+import { sdk } from "@farcaster/miniapp-sdk";
+import { useEffect } from "react";
+import { Star } from "lucide-react";
 
 const Index = () => {
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
+  const [isAdded, setIsAdded] = useState(true); // Default to true to avoid flash
+
+  useEffect(() => {
+    const checkContext = async () => {
+      try {
+        const context = await sdk.context;
+        // Check strict equality to false so we only prompt if explicitly not added
+        if (context && context.client.added === false) {
+          setIsAdded(false);
+        }
+      } catch (err) {
+        console.error("Error checking Farcaster context:", err);
+      }
+    };
+    checkContext();
+  }, []);
+
+  const handleAddStart = async () => {
+    try {
+      await sdk.actions.addMiniApp();
+      setIsAdded(true);
+    } catch (error) {
+      console.error("Failed to add miniapp:", error);
+    }
+  };
 
   return (
     <main className="min-h-screen w-full flex items-center justify-center overflow-auto bg-transparent relative selection:bg-blue-500 selection:text-white py-6">
@@ -114,6 +142,19 @@ const Index = () => {
 
 
       </div>
+
+      {/* Add to Favorites Prompt */}
+      {!isAdded && (
+        <div className="fixed bottom-6 left-1/2 transform -translate-x-1/2 z-50 animate-in fade-in slide-in-from-bottom-4 duration-500">
+          <button
+            onClick={handleAddStart}
+            className="flex items-center gap-2 bg-yellow-500/90 hover:bg-yellow-500 text-black font-bold py-3 px-6 rounded-full shadow-[0_0_20px_rgba(234,179,8,0.5)] transition-all hover:scale-105 active:scale-95 backdrop-blur-sm"
+          >
+            <Star className="w-5 h-5 fill-black" />
+            Add to Favorites
+          </button>
+        </div>
+      )}
     </main>
   );
 };
