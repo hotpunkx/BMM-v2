@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Canvas as FabricCanvas, FabricImage, IText, Rect, Path, Shadow } from "fabric";
+import { Canvas as FabricCanvas, FabricImage, IText, Rect, Path, Shadow, Circle, Line } from "fabric";
 import { Button } from "./ui/button";
 
 // --- TEXT PRESETS DEFINITION ---
@@ -88,7 +88,7 @@ const TEXT_PRESETS: Record<PresetName, Partial<IText>> = {
   },
 };
 
-import { Download, Type, Image, Trash2, Undo2, Redo2, Square, ArrowRight, ImagePlus, Monitor, Smartphone, RectangleHorizontal, Loader2, Coins, Share2, ChevronDown } from "lucide-react";
+import { Download, Type, Image, Trash2, Undo2, Redo2, Square, ArrowRight, ImagePlus, Monitor, Smartphone, RectangleHorizontal, Loader2, Coins, Share2, ChevronDown, Circle as CircleIcon, Minus, Palette, Pen, Shapes, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 import { Slider } from "./ui/slider";
 import { Label } from "./ui/label";
@@ -366,6 +366,39 @@ export const MemeCanvas = ({ imageUrl, textColor, fontSize, onColorChange, onFon
     toast.success("Arrow added!");
   };
 
+  const addCircle = () => {
+    if (!fabricCanvas) return;
+    const circle = new Circle({
+      radius: 50, left: 150, top: 150, fill: textColor, stroke: textStrokeColor, strokeWidth: 2, selectable: true,
+    });
+    fabricCanvas.add(circle);
+    fabricCanvas.setActiveObject(circle);
+    fabricCanvas.renderAll();
+    toast.success("Circle added!");
+  };
+
+  const addSquare = () => {
+    if (!fabricCanvas) return;
+    const square = new Rect({
+      left: 150, top: 150, fill: textColor, width: 100, height: 100, stroke: textStrokeColor, strokeWidth: 2, selectable: true,
+    });
+    fabricCanvas.add(square);
+    fabricCanvas.setActiveObject(square);
+    fabricCanvas.renderAll();
+    toast.success("Square added!");
+  };
+
+  const addLine = () => {
+    if (!fabricCanvas) return;
+    const line = new Line([50, 100, 200, 100], {
+      left: 150, top: 150, stroke: textColor, strokeWidth: 5, selectable: true,
+    });
+    fabricCanvas.add(line);
+    fabricCanvas.setActiveObject(line);
+    fabricCanvas.renderAll();
+    toast.success("Line added!");
+  };
+
   const applyPreset = (presetName: PresetName) => {
     if (!fabricCanvas) return;
     const activeObject = fabricCanvas.getActiveObject();
@@ -633,12 +666,32 @@ export const MemeCanvas = ({ imageUrl, textColor, fontSize, onColorChange, onFon
             <Button onClick={addText} size="sm" variant="secondary" className="gap-2 bg-slate-800 text-white hover:bg-slate-700 border-white/10">
               <Type className="w-4 h-4" /> Text
             </Button>
-            <Button onClick={addRectangle} size="icon" variant="ghost" className="text-slate-400 hover:text-white hover:bg-white/10" title="Rectangle">
-              <Square className="w-4 h-4" />
-            </Button>
-            <Button onClick={addArrow} size="icon" variant="ghost" className="text-slate-400 hover:text-white hover:bg-white/10" title="Arrow">
-              <ArrowRight className="w-4 h-4" />
-            </Button>
+
+            {/* Shapes Dropdown */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="icon" className="text-slate-400 hover:text-white hover:bg-white/10" title="Shapes">
+                  <Shapes className="w-4 h-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-32 bg-slate-900 border-white/10 text-white">
+                <DropdownMenuItem onClick={addCircle} className="gap-2 cursor-pointer focus:bg-white/10 focus:text-white">
+                  <CircleIcon className="w-4 h-4" /> Circle
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={addSquare} className="gap-2 cursor-pointer focus:bg-white/10 focus:text-white">
+                  <Square className="w-4 h-4" /> Square
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={addRectangle} className="gap-2 cursor-pointer focus:bg-white/10 focus:text-white">
+                  <RectangleHorizontal className="w-4 h-4" /> Rectangle
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={addLine} className="gap-2 cursor-pointer focus:bg-white/10 focus:text-white">
+                  <Minus className="w-4 h-4" /> Line
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={addArrow} className="gap-2 cursor-pointer focus:bg-white/10 focus:text-white">
+                  <ArrowRight className="w-4 h-4" /> Arrow
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
 
             {/* Aspect Ratio Key - Moved beside Arrow */}
             <DropdownMenu>
@@ -699,14 +752,14 @@ export const MemeCanvas = ({ imageUrl, textColor, fontSize, onColorChange, onFon
         {/* Row 3: Text Styles & Presets */}
         <div className="flex justify-center items-center gap-4 flex-wrap text-sm pt-1">
           <div className="flex items-center gap-2">
-            <Label className="text-xs text-slate-300">TEXT</Label>
+            <Palette className="w-4 h-4 text-slate-300" />
             <div className="relative overflow-hidden w-6 h-6 rounded border border-white/20">
               <input type="color" value={textColor} onChange={(e) => onColorChange(e.target.value)} className="absolute -top-2 -left-2 w-10 h-10 cursor-pointer p-0 border-0" />
             </div>
           </div>
 
           <div className="flex items-center gap-2">
-            <Label className="text-xs text-slate-300">OUTLINE</Label>
+            <Pen className="w-4 h-4 text-slate-300" />
             <div className="relative overflow-hidden w-6 h-6 rounded border border-white/20">
               <input type="color" value={textStrokeColor} onChange={(e) => setTextStrokeColor(e.target.value)} className="absolute -top-2 -left-2 w-10 h-10 cursor-pointer p-0 border-0" />
             </div>
@@ -716,8 +769,8 @@ export const MemeCanvas = ({ imageUrl, textColor, fontSize, onColorChange, onFon
           <div className="flex items-center gap-2">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="outline" size="sm" className="h-7 text-xs gap-1 border-white/20 bg-white/5 hover:bg-white/10 text-slate-300">
-                  <Type className="w-3 h-3" /> PRESETS
+                <Button variant="ghost" size="icon" className="h-7 w-7 text-slate-300 hover:text-white hover:bg-white/10" title="Text Presets">
+                  <Sparkles className="w-4 h-4" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent className="w-48 bg-slate-900 border-white/10 text-white max-h-64 overflow-y-auto">
