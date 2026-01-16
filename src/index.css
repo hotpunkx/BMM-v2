@@ -230,8 +230,15 @@ All colors MUST be HSL.
 }
 
 .btn-share-base {
-  background: #3F5EFB !important;
-  background: radial-gradient(circle, rgba(63, 94, 251, 1) 0%, rgba(20, 15, 16, 1) 100%) !important;
+  --btn-bg-1: hsla(220 90% 40% / 1);
+  --btn-bg-2: hsla(240 80% 10% / 1);
+  --btn-bg-color: hsla(0 0% 100% / 1);
+}
+
+.btn-orange {
+  --btn-bg-1: hsla(35 95% 60% / 1);
+  --btn-bg-2: hsla(40 100% 50% / 1);
+  --btn-bg-color: hsla(0 0% 100% / 1);
 }
 
 /* From Uiverse.io by MuhammadHasann - Adapted for based-meme-maker */

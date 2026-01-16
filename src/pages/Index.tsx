@@ -1,7 +1,10 @@
+import { useState } from "react";
 import { MemeGenerator } from "@/components/MemeGenerator";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 
 const Index = () => {
+  const [uploadedImage, setUploadedImage] = useState<string | null>(null);
+
   return (
     <main className="min-h-screen w-full flex items-center justify-center overflow-auto bg-transparent relative selection:bg-blue-500 selection:text-white py-10">
 
@@ -21,14 +24,16 @@ const Index = () => {
           <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-cyan-300 to-blue-500 drop-shadow-[0_0_20px_rgba(59,130,246,0.8)] filter">
             Meme Maker
           </h1>
-          <p className="text-slate-300 text-sm tracking-wide font-medium drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
-            YOUR GATEWAY TO <span className="text-blue-300 drop-shadow-[0_0_10px_rgba(147,197,253,0.8)]">BASED</span> MEMES.
-          </p>
+          {!uploadedImage && (
+            <p className="text-slate-300 text-sm tracking-wide font-medium drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
+              YOUR GATEWAY TO <span className="text-blue-300 drop-shadow-[0_0_10px_rgba(147,197,253,0.8)]">BASED</span> MEMES.
+            </p>
+          )}
         </div>
 
         {/* MemeGenerator handles the Upload / Canvas Switch */}
         <div className="w-full flex justify-center">
-          <MemeGenerator />
+          <MemeGenerator uploadedImage={uploadedImage} setUploadedImage={setUploadedImage} />
         </div>
 
 

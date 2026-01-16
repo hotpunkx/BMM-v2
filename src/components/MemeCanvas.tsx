@@ -484,23 +484,22 @@ export const MemeCanvas = ({ imageUrl, textColor, fontSize, onColorChange, onFon
 
       {/* Top Controls: Image & Download */}
       <div className="flex justify-center gap-2 flex-wrap pb-4">
-        <ThreeDButton
-          label="Add Photo"
-          onClick={addImage}
-          clickText="Add Photo"
-        />
-        <ThreeDButton
-          label="Upload New"
-          onClick={() => setUploadedImage(null)}
-          clickText="Upload New"
-        />
-        <Button onClick={downloadMeme} className="btn-donate gap-2">
+        <Button onClick={addImage} className="btn-donate btn-orange gap-2 text-white">
+          <ImagePlus className="w-4 h-4" />
+          Add Photo
+        </Button>
+        <Button onClick={() => setUploadedImage(null)} className="btn-donate btn-orange gap-2 text-white">
+          <Image className="w-4 h-4" />
+          Upload New
+        </Button>
+        <Button onClick={downloadMeme} className="btn-donate gap-2 text-white">
           <Download className="w-4 h-4" />
+          Download
         </Button>
         <Button
           onClick={handleMint}
           disabled={isMinting}
-          className="btn-donate gap-2"
+          className="btn-donate gap-2 text-white"
         >
           {isMinting ? (
             <>

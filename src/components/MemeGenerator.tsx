@@ -2,8 +2,12 @@ import { useState } from "react";
 import { ImageUpload } from "./ImageUpload";
 import { MemeCanvas } from "./MemeCanvas";
 
-export const MemeGenerator = () => {
-  const [uploadedImage, setUploadedImage] = useState<string | null>(null);
+export interface MemeGeneratorProps {
+  uploadedImage: string | null;
+  setUploadedImage: (image: string | null) => void;
+}
+
+export const MemeGenerator = ({ uploadedImage, setUploadedImage }: MemeGeneratorProps) => {
   const [textColor, setTextColor] = useState("#ffffff");
   const [fontSize, setFontSize] = useState(48);
 
