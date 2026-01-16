@@ -482,8 +482,8 @@ export const MemeCanvas = ({ imageUrl, textColor, fontSize, onColorChange, onFon
     <div className="space-y-2 max-w-4xl mx-auto animate-in fade-in duration-500 pb-20">
       <input ref={fileInputRef} type="file" accept="image/*" onChange={handleImageUpload} className="hidden" />
 
-      {/* Top Controls: Image & Download - Mobile Optimized */}
-      <div className="flex justify-center gap-1.5 pb-2 overflow-x-auto px-1 snap-x no-scrollbar">
+      {/* Top Controls: Image & Download - 2 Layers on Mobile */}
+      <div className="flex justify-center flex-wrap gap-2 pb-2 px-1">
         <Button onClick={addImage} size="sm" className="btn-donate btn-orange gap-1.5 text-white shrink-0 px-3 h-9 text-xs sm:text-sm">
           <ImagePlus className="w-3.5 h-3.5" />
           Add

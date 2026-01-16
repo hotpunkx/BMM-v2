@@ -41,8 +41,8 @@ const Index = () => {
       <div className="fixed top-[-10%] right-[-5%] w-96 h-96 bg-blue-600/20 rounded-full blur-[100px] pointer-events-none z-0"></div>
       <div className="fixed bottom-[-10%] left-[-5%] w-96 h-96 bg-purple-600/10 rounded-full blur-[100px] pointer-events-none z-0"></div>
 
-      {/* Navbar / Header Actions - Responsive Positioning */}
-      <div className="md:fixed md:top-4 md:right-4 z-50 flex justify-center w-full md:w-auto pt-4 md:pt-0 mb-4 md:mb-0">
+      {/* Navbar / Header Actions */}
+      <div className="fixed top-4 right-4 z-50">
         <ConnectButton.Custom>
           {({
             account,
