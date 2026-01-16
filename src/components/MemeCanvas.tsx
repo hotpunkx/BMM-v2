@@ -639,6 +639,30 @@ export const MemeCanvas = ({ imageUrl, textColor, fontSize, onColorChange, onFon
             <Button onClick={addArrow} size="icon" variant="ghost" className="text-slate-400 hover:text-white hover:bg-white/10" title="Arrow">
               <ArrowRight className="w-4 h-4" />
             </Button>
+
+            {/* Aspect Ratio Key - Moved beside Arrow */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="sm" className="h-9 gap-2 text-slate-400 hover:text-white hover:bg-white/10 border border-transparent hover:border-white/10" title="Canvas Ratio">
+                  <Monitor className="w-4 h-4" />
+                  <ChevronDown className="w-3 h-3 opacity-50" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-32 bg-slate-900 border-white/10 text-white">
+                <DropdownMenuItem onClick={() => setAspectRatio("16:9")} className="gap-2 cursor-pointer focus:bg-white/10 focus:text-white justify-between">
+                  <div className="flex items-center gap-2"><Monitor className="w-4 h-4" /> 16:9</div>
+                  {aspectRatio === "16:9" && <div className="w-1.5 h-1.5 rounded-full bg-blue-500" />}
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setAspectRatio("4:3")} className="gap-2 cursor-pointer focus:bg-white/10 focus:text-white justify-between">
+                  <div className="flex items-center gap-2"><RectangleHorizontal className="w-4 h-4" /> 4:3</div>
+                  {aspectRatio === "4:3" && <div className="w-1.5 h-1.5 rounded-full bg-blue-500" />}
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setAspectRatio("9:16")} className="gap-2 cursor-pointer focus:bg-white/10 focus:text-white justify-between">
+                  <div className="flex items-center gap-2"><Smartphone className="w-4 h-4" /> 9:16</div>
+                  {aspectRatio === "9:16" && <div className="w-1.5 h-1.5 rounded-full bg-blue-500" />}
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
 
           <div className="flex gap-2">
@@ -655,7 +679,7 @@ export const MemeCanvas = ({ imageUrl, textColor, fontSize, onColorChange, onFon
           </div>
         </div>
 
-        {/* Row 2: Canvas Settings (Color & Ratio) */}
+        {/* Row 2: Canvas Settings (Color Only) */}
         <div className="flex justify-center items-center gap-4 flex-wrap bg-black/20 p-2 rounded-lg border border-white/5">
           <div className="flex items-center gap-2">
             <Label htmlFor="canvas-color" className="text-xs font-semibold text-slate-300">CANVAS</Label>
@@ -669,35 +693,6 @@ export const MemeCanvas = ({ imageUrl, textColor, fontSize, onColorChange, onFon
                 title="Canvas Background Color"
               />
             </div>
-          </div>
-
-          <div className="h-6 w-px bg-white/10" />
-
-          <div className="flex items-center gap-1">
-            <Button
-              variant={aspectRatio === "16:9" ? "secondary" : "ghost"}
-              size="sm"
-              onClick={() => setAspectRatio("16:9")}
-              className={`px-3 h-8 gap-2 text-xs transition-colors ${aspectRatio === "16:9" ? "bg-blue-600/80 text-white hover:bg-blue-600" : "text-slate-400 hover:text-white hover:bg-white/10"}`}
-            >
-              <Monitor className="w-3 h-3" /> 16:9
-            </Button>
-            <Button
-              variant={aspectRatio === "4:3" ? "secondary" : "ghost"}
-              size="sm"
-              onClick={() => setAspectRatio("4:3")}
-              className={`px-3 h-8 gap-2 text-xs transition-colors ${aspectRatio === "4:3" ? "bg-blue-600/80 text-white hover:bg-blue-600" : "text-slate-400 hover:text-white hover:bg-white/10"}`}
-            >
-              <RectangleHorizontal className="w-3 h-3" /> 4:3
-            </Button>
-            <Button
-              variant={aspectRatio === "9:16" ? "secondary" : "ghost"}
-              size="sm"
-              onClick={() => setAspectRatio("9:16")}
-              className={`px-3 h-8 gap-2 text-xs transition-colors ${aspectRatio === "9:16" ? "bg-blue-600/80 text-white hover:bg-blue-600" : "text-slate-400 hover:text-white hover:bg-white/10"}`}
-            >
-              <Smartphone className="w-3 h-3" /> 9:16
-            </Button>
           </div>
         </div>
 
