@@ -479,11 +479,11 @@ export const MemeCanvas = ({ imageUrl, textColor, fontSize, onColorChange, onFon
   };
 
   return (
-    <div className="space-y-4 max-w-4xl mx-auto animate-in fade-in duration-500 pb-20">
+    <div className="space-y-2 max-w-4xl mx-auto animate-in fade-in duration-500 pb-20">
       <input ref={fileInputRef} type="file" accept="image/*" onChange={handleImageUpload} className="hidden" />
 
       {/* Top Controls: Image & Download */}
-      <div className="flex justify-center gap-2 flex-wrap pb-4">
+      <div className="flex justify-center gap-2 flex-wrap pb-2">
         <Button onClick={addImage} className="btn-donate btn-orange gap-2 text-white">
           <ImagePlus className="w-4 h-4" />
           Add Photo
@@ -494,7 +494,6 @@ export const MemeCanvas = ({ imageUrl, textColor, fontSize, onColorChange, onFon
         </Button>
         <Button onClick={downloadMeme} className="btn-donate gap-2 text-white">
           <Download className="w-4 h-4" />
-          Download
         </Button>
         <Button
           onClick={handleMint}
@@ -520,12 +519,12 @@ export const MemeCanvas = ({ imageUrl, textColor, fontSize, onColorChange, onFon
 
         <Button onClick={handleBaseShare} disabled={isSharing} className="btn-donate btn-share-base gap-2 text-white">
           {isSharing ? <Loader2 className="w-4 h-4 animate-spin" /> : <div className="w-4 h-4 rounded-full bg-white/20 flex items-center justify-center">🔵</div>}
-          Share to Base
+          Share
         </Button>
       </div>
 
       {/* Editor Toolbar */}
-      <div className="flex flex-col gap-3 bg-slate-900/60 backdrop-blur-md border border-white/10 p-4 rounded-xl shadow-2xl ring-1 ring-white/5">
+      <div className="flex flex-col gap-2 bg-slate-900/60 backdrop-blur-md border border-white/10 p-2 rounded-xl shadow-2xl ring-1 ring-white/5">
 
         {/* Row 1: Add Items & History */}
         <div className="flex justify-between items-center flex-wrap gap-2">

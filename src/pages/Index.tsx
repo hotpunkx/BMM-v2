@@ -6,7 +6,7 @@ const Index = () => {
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
 
   return (
-    <main className="min-h-screen w-full flex items-center justify-center overflow-auto bg-transparent relative selection:bg-blue-500 selection:text-white py-10">
+    <main className="min-h-screen w-full flex items-center justify-center overflow-auto bg-transparent relative selection:bg-blue-500 selection:text-white py-6">
 
       {/* Background Effects */}
       <div className="fixed inset-0 ambient-glow pointer-events-none z-0"></div>
@@ -18,7 +18,7 @@ const Index = () => {
         <ConnectButton />
       </div>
 
-      <div className="z-10 w-full flex flex-col items-center gap-8 px-6">
+      <div className="z-10 w-full flex flex-col items-center gap-4 px-6">
 
         <div className="text-center space-y-4 max-w-lg bg-slate-900/60 backdrop-blur-md border border-white/10 rounded-3xl p-8 shadow-[0_0_40px_-10px_rgba(59,130,246,0.5)]">
           <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-cyan-300 to-blue-500 drop-shadow-[0_0_20px_rgba(59,130,246,0.8)] filter">
