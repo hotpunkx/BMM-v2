@@ -1,6 +1,16 @@
 import { useEffect, useRef, useState } from "react";
 import { Canvas as FabricCanvas, FabricImage, IText, Rect, Path, Shadow, Circle, Line } from "fabric";
 import { Button } from "./ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "./ui/dialog";
+import { Input } from "./ui/input";
+
 
 // --- TEXT PRESETS DEFINITION ---
 type PresetName =
@@ -147,6 +157,13 @@ export const MemeCanvas = ({ imageUrl, textColor, fontSize, onColorChange, onFon
     }
   }, [isMintSuccess, mintHash]);
 
+
+
+  // Custom Grid State
+  const [isGridDialogOpen, setIsGridDialogOpen] = useState(false);
+  const [customGridRows, setCustomGridRows] = useState(5);
+  const [customGridCols, setCustomGridCols] = useState(5);
+
   // Guard to prevent double initialization issues
   const canvasInstanceRef = useRef<FabricCanvas | null>(null);
 
@@ -160,6 +177,7 @@ export const MemeCanvas = ({ imageUrl, textColor, fontSize, onColorChange, onFon
   const saveState = (canvas: FabricCanvas) => {
     if (isRedoing.current) return;
     try {
+      // console.log("Saving State...", historyStep);
       const state = {
         canvas: canvas.toJSON(),
         canvasColor: canvasColorRef.current,
@@ -475,6 +493,11 @@ export const MemeCanvas = ({ imageUrl, textColor, fontSize, onColorChange, onFon
     saveState(fabricCanvas);
   };
 
+  const handleCustomGrid = () => {
+    addGrid(customGridRows, customGridCols);
+    setIsGridDialogOpen(false);
+  };
+
   const applyPreset = (presetName: PresetName) => {
     if (!fabricCanvas) return;
     const activeObject = fabricCanvas.getActiveObject();
@@ -553,6 +576,8 @@ export const MemeCanvas = ({ imageUrl, textColor, fontSize, onColorChange, onFon
     if (historyData.canvasColor) setCanvasColor(historyData.canvasColor);
     if (historyData.aspectRatio) setAspectRatio(historyData.aspectRatio);
 
+    // console.log("Redoing to step:", historyStep + 1);
+
     fabricCanvas.loadFromJSON(canvasData).then(() => {
       const objects = fabricCanvas.getObjects();
       const img = objects.find(obj => obj instanceof FabricImage);
@@ -564,6 +589,10 @@ export const MemeCanvas = ({ imageUrl, textColor, fontSize, onColorChange, onFon
       setHistoryStep(historyStep + 1);
       isRedoing.current = false;
       toast.success("Redo applied");
+    }).catch((err) => {
+      console.error("Redo failed:", err);
+      isRedoing.current = false;
+      toast.error("Redo failed");
     });
   };
 
@@ -813,8 +842,58 @@ export const MemeCanvas = ({ imageUrl, textColor, fontSize, onColorChange, onFon
                 <DropdownMenuItem onClick={() => addGrid(3, 3)} className="gap-2 cursor-pointer focus:bg-white/10 focus:text-white">
                   <LayoutGrid className="w-4 h-4" /> 3:3
                 </DropdownMenuItem>
+                <div className="h-px bg-white/10 my-1" />
+                <DropdownMenuItem onClick={() => setIsGridDialogOpen(true)} className="gap-2 cursor-pointer focus:bg-white/10 focus:text-white">
+                  <LayoutGrid className="w-4 h-4" /> Custom...
+                </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
+
+            <Dialog open={isGridDialogOpen} onOpenChange={setIsGridDialogOpen}>
+              <DialogContent className="bg-slate-900 border-white/10 text-white sm:max-w-[425px]">
+                <DialogHeader>
+                  <DialogTitle>Custom Grid</DialogTitle>
+                  <DialogDescription>
+                    Enter the number of rows and columns for your grid.
+                  </DialogDescription>
+                </DialogHeader>
+                <div className="grid gap-4 py-4">
+                  <div className="grid grid-cols-4 items-center gap-4">
+                    <Label htmlFor="rows" className="text-right">
+                      Rows
+                    </Label>
+                    <Input
+                      id="rows"
+                      type="number"
+                      min="1"
+                      max="20"
+                      value={customGridRows}
+                      onChange={(e) => setCustomGridRows(parseInt(e.target.value) || 1)}
+                      className="col-span-3 bg-slate-800 border-white/10 text-white"
+                    />
+                  </div>
+                  <div className="grid grid-cols-4 items-center gap-4">
+                    <Label htmlFor="cols" className="text-right">
+                      Columns
+                    </Label>
+                    <Input
+                      id="cols"
+                      type="number"
+                      min="1"
+                      max="20"
+                      value={customGridCols}
+                      onChange={(e) => setCustomGridCols(parseInt(e.target.value) || 1)}
+                      className="col-span-3 bg-slate-800 border-white/10 text-white"
+                    />
+                  </div>
+                </div>
+                <DialogFooter>
+                  <Button onClick={handleCustomGrid} className="bg-blue-600 hover:bg-blue-700 text-white">
+                    Apply Grid
+                  </Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
 
             {/* Shapes Dropdown */}
             <DropdownMenu>

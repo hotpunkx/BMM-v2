@@ -26,8 +26,11 @@ const Index = () => {
 
   const handleAddStart = async () => {
     try {
-      await sdk.actions.addMiniApp();
+      const result = await sdk.actions.addMiniApp();
       setIsAdded(true);
+      if (result.notificationDetails) {
+        console.log('Mini app added with notifications enabled');
+      }
     } catch (error) {
       console.error("Failed to add miniapp:", error);
     }
