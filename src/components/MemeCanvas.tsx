@@ -150,10 +150,22 @@ export const MemeCanvas = ({ imageUrl, textColor, fontSize, onColorChange, onFon
   // Guard to prevent double initialization issues
   const canvasInstanceRef = useRef<FabricCanvas | null>(null);
 
+  // Refs for state values handling in event listeners/saveState
+  const canvasColorRef = useRef(canvasColor);
+  const aspectRatioRef = useRef(aspectRatio);
+
+  useEffect(() => { canvasColorRef.current = canvasColor; }, [canvasColor]);
+  useEffect(() => { aspectRatioRef.current = aspectRatio; }, [aspectRatio]);
+
   const saveState = (canvas: FabricCanvas) => {
     if (isRedoing.current) return;
     try {
-      const json = JSON.stringify(canvas.toJSON());
+      const state = {
+        canvas: canvas.toJSON(),
+        canvasColor: canvasColorRef.current,
+        aspectRatio: aspectRatioRef.current
+      };
+      const json = JSON.stringify(state);
       setHistory((prev) => {
         const newHistory = prev.slice(0, historyStep + 1);
         newHistory.push(json);
@@ -217,7 +229,11 @@ export const MemeCanvas = ({ imageUrl, textColor, fontSize, onColorChange, onFon
       window.addEventListener("resize", handleResize);
 
       // Initial State Save
-      const initialState = JSON.stringify(canvas.toJSON());
+      const initialState = JSON.stringify({
+        canvas: canvas.toJSON(),
+        canvasColor: canvasColor,
+        aspectRatio: aspectRatio
+      });
       setHistory([initialState]);
       setHistoryStep(0);
 
@@ -271,6 +287,15 @@ export const MemeCanvas = ({ imageUrl, textColor, fontSize, onColorChange, onFon
 
     refreshImagePosition(fabricCanvas, width, height);
     fabricCanvas.renderAll();
+
+    // Auto-save state on significant changes (debounced slightly to avoid rapid inputs)
+    if (!isRedoing.current) {
+      const timer = setTimeout(() => {
+        saveState(fabricCanvas);
+      }, 500);
+      return () => clearTimeout(timer);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [aspectRatio, canvasColor, fabricCanvas]);
 
   // Load Image
@@ -296,7 +321,11 @@ export const MemeCanvas = ({ imageUrl, textColor, fontSize, onColorChange, onFon
       fabricCanvas.renderAll();
 
       // Reset History on new image load
-      const state = JSON.stringify(fabricCanvas.toJSON());
+      const state = JSON.stringify({
+        canvas: fabricCanvas.toJSON(),
+        canvasColor: canvasColor, // Use current (or default)
+        aspectRatio: aspectRatio
+      });
       setHistory([state]);
       setHistoryStep(0);
     }).catch(err => {
@@ -486,13 +515,25 @@ export const MemeCanvas = ({ imageUrl, textColor, fontSize, onColorChange, onFon
     if (!fabricCanvas || historyStep <= 0) return;
     const historyState = history[historyStep - 1];
     isRedoing.current = true;
-    fabricCanvas.loadFromJSON(JSON.parse(historyState)).then(() => {
+    const historyData = JSON.parse(historyState);
+    isRedoing.current = true;
+
+    // Handle both old format (raw canvas JSON) and new format ({canvas, meta})
+    const canvasData = historyData.canvas || historyData;
+
+    // Restore Meta State if available
+    if (historyData.canvasColor) setCanvasColor(historyData.canvasColor);
+    if (historyData.aspectRatio) setAspectRatio(historyData.aspectRatio);
+
+    fabricCanvas.loadFromJSON(canvasData).then(() => {
       const objects = fabricCanvas.getObjects();
       // Re-find image ref
       const img = objects.find(obj => obj instanceof FabricImage);
       if (img) imageRef.current = img as FabricImage;
 
-      fabricCanvas.backgroundColor = canvasColor;
+      // Ensure background color is applied immediately
+      if (historyData.canvasColor) fabricCanvas.backgroundColor = historyData.canvasColor;
+
       fabricCanvas.renderAll();
       setHistoryStep(historyStep - 1);
       isRedoing.current = false;
@@ -504,12 +545,21 @@ export const MemeCanvas = ({ imageUrl, textColor, fontSize, onColorChange, onFon
     if (!fabricCanvas || historyStep >= history.length - 1) return;
     const historyState = history[historyStep + 1];
     isRedoing.current = true;
-    fabricCanvas.loadFromJSON(JSON.parse(historyState)).then(() => {
+    const historyData = JSON.parse(historyState);
+    isRedoing.current = true;
+
+    const canvasData = historyData.canvas || historyData;
+
+    if (historyData.canvasColor) setCanvasColor(historyData.canvasColor);
+    if (historyData.aspectRatio) setAspectRatio(historyData.aspectRatio);
+
+    fabricCanvas.loadFromJSON(canvasData).then(() => {
       const objects = fabricCanvas.getObjects();
       const img = objects.find(obj => obj instanceof FabricImage);
       if (img) imageRef.current = img as FabricImage;
 
-      fabricCanvas.backgroundColor = canvasColor;
+      if (historyData.canvasColor) fabricCanvas.backgroundColor = historyData.canvasColor;
+
       fabricCanvas.renderAll();
       setHistoryStep(historyStep + 1);
       isRedoing.current = false;
@@ -711,19 +761,38 @@ export const MemeCanvas = ({ imageUrl, textColor, fontSize, onColorChange, onFon
         <div className="flex justify-between items-center flex-wrap gap-2">
           <div className="flex gap-2">
 
-            {/* Text Dropdown (Standard Text Only) */}
+            {/* Text Dropdown (Standard & Presets) */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button size="sm" variant="secondary" className="gap-2 bg-slate-800 text-white hover:bg-slate-700 border-white/10">
                   <Type className="w-4 h-4" /> Text <ChevronDown className="w-3 h-3 opacity-50" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-48 bg-slate-900 border-white/10 text-white">
+              <DropdownMenuContent className="w-48 bg-slate-900 border-white/10 text-white max-h-80 overflow-y-auto">
                 <DropdownMenuItem onClick={addText} className="gap-2 cursor-pointer focus:bg-white/10 focus:text-white font-semibold">
                   <Type className="w-4 h-4" /> Add Standard Text
                 </DropdownMenuItem>
+                <div className="h-px bg-white/10 my-1" />
+                <div className="px-2 py-1.5 text-xs font-semibold text-slate-400">PRESETS</div>
+                {Object.keys(TEXT_PRESETS).map((key) => (
+                  <DropdownMenuItem
+                    key={key}
+                    onClick={() => applyPreset(key as PresetName)}
+                    className="cursor-pointer hover:bg-white/10 focus:bg-white/10 text-xs py-2 capitalize pl-6"
+                  >
+                    {key}
+                  </DropdownMenuItem>
+                ))}
               </DropdownMenuContent>
             </DropdownMenu>
+
+            {/* Text Color (Moved from Row 2) */}
+            <div className="flex items-center gap-2" title="Text Color">
+              <Palette className="w-4 h-4 text-slate-300" />
+              <div className="relative overflow-hidden w-6 h-6 rounded border border-white/20">
+                <input type="color" value={textColor} onChange={(e) => onColorChange(e.target.value)} className="absolute -top-2 -left-2 w-10 h-10 cursor-pointer p-0 border-0" />
+              </div>
+            </div>
 
 
 
@@ -798,22 +867,27 @@ export const MemeCanvas = ({ imageUrl, textColor, fontSize, onColorChange, onFon
             </DropdownMenu>
           </div>
 
-          <div className="flex gap-2">
+          <div className="flex gap-0.5">
             <div className="h-8 w-px bg-white/10 mx-1" />
-            <Button onClick={handleUndo} size="icon" variant="ghost" className="text-slate-400 hover:text-white hover:bg-white/10" disabled={historyStep <= 0}>
-              <Undo2 className="w-4 h-4" />
-            </Button>
-            <Button onClick={handleRedo} size="icon" variant="ghost" className="text-slate-400 hover:text-white hover:bg-white/10" disabled={historyStep >= history.length - 1}>
-              <Redo2 className="w-4 h-4" />
-            </Button>
             <Button onClick={deleteSelected} size="icon" variant="destructive" className="bg-red-500/80 hover:bg-red-600/90 text-white">
               <Trash2 className="w-4 h-4" />
             </Button>
           </div>
         </div>
 
-        {/* Row 2: Styles - Canvas, Text, Presets, Outline, Size */}
-        <div className="flex justify-center items-center gap-4 flex-wrap text-sm pt-1">
+        {/* Row 2: History & Styles */}
+        <div className="flex justify-center items-center gap-2 flex-wrap text-sm pt-1">
+
+          {/* History Controls (Moved from Row 1) */}
+          <div className="flex items-center gap-0.5 mr-2">
+            <Button onClick={handleUndo} size="icon" variant="ghost" className="h-8 w-8 text-slate-400 hover:text-white hover:bg-white/10" disabled={historyStep <= 0}>
+              <Undo2 className="w-4 h-4" />
+            </Button>
+            <Button onClick={handleRedo} size="icon" variant="ghost" className="h-8 w-8 text-slate-400 hover:text-white hover:bg-white/10" disabled={historyStep >= history.length - 1}>
+              <Redo2 className="w-4 h-4" />
+            </Button>
+            <div className="h-6 w-px bg-white/10 mx-1" />
+          </div>
 
           {/* Canvas Color (PaintBucket) */}
           <div className="flex items-center gap-2" title="Canvas Background">
@@ -822,35 +896,6 @@ export const MemeCanvas = ({ imageUrl, textColor, fontSize, onColorChange, onFon
               <input type="color" value={canvasColor} onChange={(e) => setCanvasColor(e.target.value)} className="absolute -top-2 -left-2 w-10 h-10 cursor-pointer p-0 border-0" />
             </div>
           </div>
-
-          {/* Text Color (Palette) - Moved from Row 1 */}
-          <div className="flex items-center gap-2" title="Text Color">
-            <Palette className="w-4 h-4 text-slate-300" />
-            <div className="relative overflow-hidden w-6 h-6 rounded border border-white/20">
-              <input type="color" value={textColor} onChange={(e) => onColorChange(e.target.value)} className="absolute -top-2 -left-2 w-10 h-10 cursor-pointer p-0 border-0" />
-            </div>
-          </div>
-
-          {/* Presets (Sparkles) - Moved from Text Dropdown */}
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon" className="text-slate-400 hover:text-white hover:bg-white/10" title="Text Presets">
-                <Sparkles className="w-4 h-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-48 bg-slate-900 border-white/10 text-white max-h-64 overflow-y-auto">
-              <div className="px-2 py-1.5 text-xs font-semibold text-slate-400">APPLY PRESET</div>
-              {Object.keys(TEXT_PRESETS).map((key) => (
-                <DropdownMenuItem
-                  key={key}
-                  onClick={() => applyPreset(key as PresetName)}
-                  className="cursor-pointer hover:bg-white/10 focus:bg-white/10 text-xs py-2 capitalize pl-4"
-                >
-                  {key}
-                </DropdownMenuItem>
-              ))}
-            </DropdownMenuContent>
-          </DropdownMenu>
 
           {/* Outline Color (Pen) */}
           <div className="flex items-center gap-2" title="Text Outline">
@@ -861,9 +906,9 @@ export const MemeCanvas = ({ imageUrl, textColor, fontSize, onColorChange, onFon
           </div>
 
           {/* Size Slider (Shifted Right) */}
-          <div className="flex items-center gap-2 min-w-[120px] ml-4">
+          <div className="flex items-center gap-2 min-w-[60px] ml-2">
             <span className="text-xs text-slate-300">SIZE</span>
-            <Slider value={[fontSize]} onValueChange={(val) => onFontSizeChange(val[0])} min={12} max={120} step={1} className="w-28" />
+            <Slider value={[fontSize]} onValueChange={(val) => onFontSizeChange(val[0])} min={12} max={120} step={1} className="w-14" />
           </div>
         </div>
       </div>
