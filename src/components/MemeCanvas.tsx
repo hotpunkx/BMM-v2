@@ -88,7 +88,7 @@ const TEXT_PRESETS: Record<PresetName, Partial<IText>> = {
   },
 };
 
-import { Download, Type, Image, Trash2, Undo2, Redo2, Square, ArrowRight, ImagePlus, Monitor, Smartphone, RectangleHorizontal, Loader2, Coins, Share2, ChevronDown, Circle as CircleIcon, Minus, Palette, Pen, Shapes, Sparkles } from "lucide-react";
+import { Download, Type, Image, Trash2, Undo2, Redo2, Square, ArrowRight, ImagePlus, Monitor, Smartphone, RectangleHorizontal, Loader2, Coins, Share2, ChevronDown, Circle as CircleIcon, Minus, Palette, Pen, Shapes, Sparkles, PaintBucket } from "lucide-react";
 import { toast } from "sonner";
 import { Slider } from "./ui/slider";
 import { Label } from "./ui/label";
@@ -408,7 +408,7 @@ export const MemeCanvas = ({ imageUrl, textColor, fontSize, onColorChange, onFon
 
       // Sync state controls to match preset (optional, improves UX)
       if (preset.fill && typeof preset.fill === 'string') onColorChange(preset.fill);
-      if (preset.stroke) setTextStrokeColor(preset.stroke);
+      if (preset.stroke && typeof preset.stroke === 'string') setTextStrokeColor(preset.stroke);
 
       fabricCanvas.renderAll();
       toast.success(`Applied ${presetName} preset!`);
@@ -732,40 +732,26 @@ export const MemeCanvas = ({ imageUrl, textColor, fontSize, onColorChange, onFon
           </div>
         </div>
 
-        {/* Row 2: Canvas Settings (Color Only) */}
-        <div className="flex justify-center items-center gap-4 flex-wrap bg-black/20 p-2 rounded-lg border border-white/5">
-          <div className="flex items-center gap-2">
-            <Label htmlFor="canvas-color" className="text-xs font-semibold text-slate-300">CANVAS</Label>
-            <div className="relative overflow-hidden w-8 h-8 rounded-full border-2 border-white/20 hover:scale-105 transition-transform">
-              <input
-                id="canvas-color"
-                type="color"
-                value={canvasColor}
-                onChange={(e) => setCanvasColor(e.target.value)}
-                className="absolute -top-4 -left-4 w-16 h-16 cursor-pointer p-0 border-0"
-                title="Canvas Background Color"
-              />
+        {/* Row 2: Text Styles, Presets & Canvas Color (Merged) */}
+        <div className="flex justify-center items-center gap-4 flex-wrap text-sm pt-1">
+
+          {/* Canvas Color (Moved here) */}
+          <div className="flex items-center gap-2" title="Canvas Background">
+            <PaintBucket className="w-4 h-4 text-slate-300" />
+            <div className="relative overflow-hidden w-6 h-6 rounded border border-white/20">
+              <input type="color" value={canvasColor} onChange={(e) => setCanvasColor(e.target.value)} className="absolute -top-2 -left-2 w-10 h-10 cursor-pointer p-0 border-0" />
             </div>
           </div>
-        </div>
 
-        {/* Row 3: Text Styles & Presets */}
-        <div className="flex justify-center items-center gap-4 flex-wrap text-sm pt-1">
-          <div className="flex items-center gap-2">
+          {/* Text Color */}
+          <div className="flex items-center gap-2" title="Text Color">
             <Palette className="w-4 h-4 text-slate-300" />
             <div className="relative overflow-hidden w-6 h-6 rounded border border-white/20">
               <input type="color" value={textColor} onChange={(e) => onColorChange(e.target.value)} className="absolute -top-2 -left-2 w-10 h-10 cursor-pointer p-0 border-0" />
             </div>
           </div>
 
-          <div className="flex items-center gap-2">
-            <Pen className="w-4 h-4 text-slate-300" />
-            <div className="relative overflow-hidden w-6 h-6 rounded border border-white/20">
-              <input type="color" value={textStrokeColor} onChange={(e) => setTextStrokeColor(e.target.value)} className="absolute -top-2 -left-2 w-10 h-10 cursor-pointer p-0 border-0" />
-            </div>
-          </div>
-
-          {/* PRESETS DROPDOWN */}
+          {/* Text Presets (Moved between Text & Outline) */}
           <div className="flex items-center gap-2">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -787,7 +773,16 @@ export const MemeCanvas = ({ imageUrl, textColor, fontSize, onColorChange, onFon
             </DropdownMenu>
           </div>
 
-          <div className="flex items-center gap-2 min-w-[120px]">
+          {/* Outline Color */}
+          <div className="flex items-center gap-2" title="Text Outline">
+            <Pen className="w-4 h-4 text-slate-300" />
+            <div className="relative overflow-hidden w-6 h-6 rounded border border-white/20">
+              <input type="color" value={textStrokeColor} onChange={(e) => setTextStrokeColor(e.target.value)} className="absolute -top-2 -left-2 w-10 h-10 cursor-pointer p-0 border-0" />
+            </div>
+          </div>
+
+          {/* Size Slider (Shifted Right) */}
+          <div className="flex items-center gap-2 min-w-[120px] ml-4">
             <span className="text-xs text-slate-300">SIZE</span>
             <Slider value={[fontSize]} onValueChange={(val) => onFontSizeChange(val[0])} min={12} max={120} step={1} className="w-28" />
           </div>
