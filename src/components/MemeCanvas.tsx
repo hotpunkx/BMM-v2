@@ -88,7 +88,7 @@ const TEXT_PRESETS: Record<PresetName, Partial<IText>> = {
   },
 };
 
-import { Download, Type, Image, Trash2, Undo2, Redo2, Square, ArrowRight, ImagePlus, Monitor, Smartphone, RectangleHorizontal, Loader2, Coins, Share2, ChevronDown, Circle as CircleIcon, Minus, Palette, Pen, Shapes, Sparkles, PaintBucket } from "lucide-react";
+import { Download, Type, Image, Trash2, Undo2, Redo2, Square, ArrowRight, ImagePlus, Monitor, Smartphone, RectangleHorizontal, Loader2, Coins, Share2, ChevronDown, Circle as CircleIcon, Minus, Palette, Pen, Shapes, Sparkles, PaintBucket, LayoutGrid } from "lucide-react";
 import { toast } from "sonner";
 import { Slider } from "./ui/slider";
 import { Label } from "./ui/label";
@@ -169,7 +169,7 @@ export const MemeCanvas = ({ imageUrl, textColor, fontSize, onColorChange, onFon
     const padding = 32;
     const maxWidth = Math.min(window.innerWidth - padding, 800);
     // Base dimensions calculation
-    let width = maxWidth;
+    const width = maxWidth;
     let height = width;
 
     if (ratio === "16:9") {
@@ -397,6 +397,53 @@ export const MemeCanvas = ({ imageUrl, textColor, fontSize, onColorChange, onFon
     fabricCanvas.setActiveObject(line);
     fabricCanvas.renderAll();
     toast.success("Line added!");
+  };
+
+  const addGrid = (rows: number, cols: number) => {
+    if (!fabricCanvas) return;
+    const { width, height } = fabricCanvas;
+    if (!width || !height) return;
+
+    // 1:1 is treated as clearing the grid (or just a frame, but for now let's just add lines if > 1)
+    if (rows === 1 && cols === 1) {
+      // Optional: clear existing grid lines if we tracked them. For now, just a toast.
+      toast.info("1:1 Grid selected (Canvas cleared of grid lines not implemented yet, just adding lines for 2:2/3:3)");
+      return;
+    }
+
+    const stepX = width / cols;
+    const stepY = height / rows;
+
+    // Vertical Lines
+    for (let i = 1; i < cols; i++) {
+      const x = i * stepX;
+      const line = new Line([x, 0, x, height], {
+        stroke: 'rgba(255, 255, 255, 0.5)', // Semi-transparent white
+        strokeWidth: 2,
+        selectable: false, // Grid usually shouldn't be moved accidentally
+        evented: false,
+        shadow: new Shadow({ color: "rgba(0,0,0,0.5)", blur: 4, offsetX: 1, offsetY: 1 }),
+      });
+      fabricCanvas.add(line);
+    }
+
+    // Horizontal Lines
+    for (let i = 1; i < rows; i++) {
+      const y = i * stepY;
+      const line = new Line([0, y, width, y], {
+        stroke: 'rgba(255, 255, 255, 0.5)',
+        strokeWidth: 2,
+        selectable: false,
+        evented: false,
+        shadow: new Shadow({ color: "rgba(0,0,0,0.5)", blur: 4, offsetX: 1, offsetY: 1 }),
+      });
+      fabricCanvas.add(line);
+    }
+
+    fabricCanvas.renderAll();
+    const label = rows === 2 ? "2:2" : "3:3";
+    toast.success(`${label} Grid added!`);
+    saveState(fabricCanvas);
   };
 
   const applyPreset = (presetName: PresetName) => {
@@ -663,9 +710,42 @@ export const MemeCanvas = ({ imageUrl, textColor, fontSize, onColorChange, onFon
         {/* Row 1: Add Items & History */}
         <div className="flex justify-between items-center flex-wrap gap-2">
           <div className="flex gap-2">
-            <Button onClick={addText} size="sm" variant="secondary" className="gap-2 bg-slate-800 text-white hover:bg-slate-700 border-white/10">
-              <Type className="w-4 h-4" /> Text
-            </Button>
+
+            {/* Text Dropdown (Standard Text Only) */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button size="sm" variant="secondary" className="gap-2 bg-slate-800 text-white hover:bg-slate-700 border-white/10">
+                  <Type className="w-4 h-4" /> Text <ChevronDown className="w-3 h-3 opacity-50" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-48 bg-slate-900 border-white/10 text-white">
+                <DropdownMenuItem onClick={addText} className="gap-2 cursor-pointer focus:bg-white/10 focus:text-white font-semibold">
+                  <Type className="w-4 h-4" /> Add Standard Text
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+
+
+
+            {/* Grid Dropdown (New) */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="icon" className="text-slate-400 hover:text-white hover:bg-white/10" title="Grid / Collage">
+                  <LayoutGrid className="w-4 h-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-32 bg-slate-900 border-white/10 text-white">
+                <DropdownMenuItem onClick={() => toast.info("Function to clear grid lines coming soon")} className="gap-2 cursor-pointer focus:bg-white/10 focus:text-white">
+                  <Square className="w-4 h-4" /> 1:1 (Clear)
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => addGrid(2, 2)} className="gap-2 cursor-pointer focus:bg-white/10 focus:text-white">
+                  <LayoutGrid className="w-4 h-4" /> 2:2
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => addGrid(3, 3)} className="gap-2 cursor-pointer focus:bg-white/10 focus:text-white">
+                  <LayoutGrid className="w-4 h-4" /> 3:3
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
 
             {/* Shapes Dropdown */}
             <DropdownMenu>
@@ -732,10 +812,10 @@ export const MemeCanvas = ({ imageUrl, textColor, fontSize, onColorChange, onFon
           </div>
         </div>
 
-        {/* Row 2: Text Styles, Presets & Canvas Color (Merged) */}
+        {/* Row 2: Styles - Canvas, Text, Presets, Outline, Size */}
         <div className="flex justify-center items-center gap-4 flex-wrap text-sm pt-1">
 
-          {/* Canvas Color (Moved here) */}
+          {/* Canvas Color (PaintBucket) */}
           <div className="flex items-center gap-2" title="Canvas Background">
             <PaintBucket className="w-4 h-4 text-slate-300" />
             <div className="relative overflow-hidden w-6 h-6 rounded border border-white/20">
@@ -743,7 +823,7 @@ export const MemeCanvas = ({ imageUrl, textColor, fontSize, onColorChange, onFon
             </div>
           </div>
 
-          {/* Text Color */}
+          {/* Text Color (Palette) - Moved from Row 1 */}
           <div className="flex items-center gap-2" title="Text Color">
             <Palette className="w-4 h-4 text-slate-300" />
             <div className="relative overflow-hidden w-6 h-6 rounded border border-white/20">
@@ -751,29 +831,28 @@ export const MemeCanvas = ({ imageUrl, textColor, fontSize, onColorChange, onFon
             </div>
           </div>
 
-          {/* Text Presets (Moved between Text & Outline) */}
-          <div className="flex items-center gap-2">
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon" className="h-7 w-7 text-slate-300 hover:text-white hover:bg-white/10" title="Text Presets">
-                  <Sparkles className="w-4 h-4" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-48 bg-slate-900 border-white/10 text-white max-h-64 overflow-y-auto">
-                {Object.keys(TEXT_PRESETS).map((key) => (
-                  <DropdownMenuItem
-                    key={key}
-                    onClick={() => applyPreset(key as PresetName)}
-                    className="cursor-pointer hover:bg-white/10 focus:bg-white/10 text-xs py-2 capitalize"
-                  >
-                    {key}
-                  </DropdownMenuItem>
-                ))}
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
+          {/* Presets (Sparkles) - Moved from Text Dropdown */}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="icon" className="text-slate-400 hover:text-white hover:bg-white/10" title="Text Presets">
+                <Sparkles className="w-4 h-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="w-48 bg-slate-900 border-white/10 text-white max-h-64 overflow-y-auto">
+              <div className="px-2 py-1.5 text-xs font-semibold text-slate-400">APPLY PRESET</div>
+              {Object.keys(TEXT_PRESETS).map((key) => (
+                <DropdownMenuItem
+                  key={key}
+                  onClick={() => applyPreset(key as PresetName)}
+                  className="cursor-pointer hover:bg-white/10 focus:bg-white/10 text-xs py-2 capitalize pl-4"
+                >
+                  {key}
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
 
-          {/* Outline Color */}
+          {/* Outline Color (Pen) */}
           <div className="flex items-center gap-2" title="Text Outline">
             <Pen className="w-4 h-4 text-slate-300" />
             <div className="relative overflow-hidden w-6 h-6 rounded border border-white/20">

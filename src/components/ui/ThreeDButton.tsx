@@ -8,7 +8,7 @@ interface ThreeDButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement
 
 export const ThreeDButton: React.FC<ThreeDButtonProps> = ({ label, clickText = "Click", className = "", onClick, ...props }) => {
     return (
-        // @ts-ignore - onClick type mismatch is fine here for simple handlers
+        // @ts-expect-error - framer-motion types compatibility issue fine here for simple handlers
         <div className={`container-button ${className}`} onClick={onClick}>
             <div className="hover bt-1"></div>
             <div className="hover bt-2"></div>
