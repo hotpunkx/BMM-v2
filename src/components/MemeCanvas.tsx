@@ -1,11 +1,99 @@
 import { useEffect, useRef, useState } from "react";
-import { Canvas as FabricCanvas, FabricImage, IText, Rect, Path } from "fabric";
+import { Canvas as FabricCanvas, FabricImage, IText, Rect, Path, Shadow } from "fabric";
 import { Button } from "./ui/button";
-import { Download, Type, Image, Trash2, Undo2, Redo2, Square, ArrowRight, ImagePlus, Monitor, Smartphone, RectangleHorizontal, Loader2, Coins, Share2 } from "lucide-react";
+
+// --- TEXT PRESETS DEFINITION ---
+type PresetName =
+  | "classic"
+  | "thick-glow"
+  | "soft-shadow"
+  | "neon"
+  | "sticker"
+  | "comic"
+  | "subtitle"
+  | "hollow"
+  | "3d"
+  | "handwritten";
+
+const TEXT_PRESETS: Record<PresetName, Partial<IText>> = {
+  classic: {
+    fontFamily: "Impact",
+    stroke: "#000000",
+    strokeWidth: 3,
+    fill: "#ffffff",
+    shadow: new Shadow({ color: "#000000", blur: 0, offsetX: 2, offsetY: 2 }),
+  },
+  "thick-glow": {
+    fontFamily: "Impact",
+    stroke: "#000000",
+    strokeWidth: 5,
+    fill: "#ffffff",
+    shadow: new Shadow({ color: "rgba(255,255,255,0.35)", blur: 10, offsetX: 0, offsetY: 0 }),
+  },
+  "soft-shadow": {
+    fontFamily: "Impact",
+    strokeWidth: 0,
+    fill: "#ffffff",
+    shadow: new Shadow({ color: "rgba(0,0,0,0.55)", blur: 24, offsetX: 0, offsetY: 12 }),
+  },
+  neon: {
+    fontFamily: "Impact",
+    fill: "#ffffff",
+    stroke: "#00ffff",
+    strokeWidth: 1,
+    shadow: new Shadow({ color: "rgba(0,255,255,0.7)", blur: 36, offsetX: 0, offsetY: 0 }),
+  },
+  sticker: {
+    fontFamily: "Impact",
+    fill: "#111111",
+    backgroundColor: "rgba(255,255,255,0.92)",
+    strokeWidth: 0,
+    padding: 8,
+    shadow: new Shadow({ color: "rgba(0,0,0,0.35)", blur: 25, offsetX: 0, offsetY: 10 }),
+  },
+  comic: {
+    fontFamily: "Comic Sans MS",
+    fill: "#ffffff",
+    stroke: "#000000",
+    strokeWidth: 2.5,
+    shadow: new Shadow({ color: "rgba(0,0,0,0.8)", blur: 0, offsetX: 6, offsetY: 6 }),
+  },
+  subtitle: {
+    fontFamily: "Arial",
+    fill: "#ffffff",
+    backgroundColor: "rgba(0,0,0,0.65)",
+    strokeWidth: 0,
+    padding: 6,
+    shadow: new Shadow({ color: "rgba(0,0,0,0.75)", blur: 8, offsetX: 0, offsetY: 2 }),
+  },
+  hollow: {
+    fontFamily: "Impact",
+    fill: "transparent",
+    stroke: "#ffffff",
+    strokeWidth: 4,
+    shadow: new Shadow({ color: "rgba(0,0,0,0.35)", blur: 22, offsetX: 0, offsetY: 10 }),
+  },
+  "3d": {
+    fontFamily: "Impact",
+    stroke: "#000000",
+    strokeWidth: 2,
+    fill: "#ffffff",
+    shadow: new Shadow({ color: "rgba(0,0,0,0.8)", blur: 0, offsetX: 5, offsetY: 5 }), // Simplified Fabric 3D
+  },
+  handwritten: {
+    fontFamily: "Comic Sans MS", // Fallback
+    fill: "#ffffff",
+    strokeWidth: 0,
+    shadow: new Shadow({ color: "rgba(0,0,0,0.55)", blur: 22, offsetX: 0, offsetY: 10 }),
+  },
+};
+
+import { Download, Type, Image, Trash2, Undo2, Redo2, Square, ArrowRight, ImagePlus, Monitor, Smartphone, RectangleHorizontal, Loader2, Coins, Share2, ChevronDown } from "lucide-react";
 import { toast } from "sonner";
 import { Slider } from "./ui/slider";
 import { Label } from "./ui/label";
 import { ThreeDButton } from "./ui/ThreeDButton";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "./ui/dropdown-menu";
 import { useAccount, useWriteContract, useWaitForTransactionReceipt } from "wagmi";
 import { CONTRACT_ADDRESS, CONTRACT_ABI } from "../constants/contract";
 import { uploadToIPFS, uploadFileToIPFS } from "../utils/ipfs";
@@ -90,12 +178,7 @@ export const MemeCanvas = ({ imageUrl, textColor, fontSize, onColorChange, onFon
       height = Math.round(width * 3 / 4);
     } else if (ratio === "9:16") {
       height = Math.round(width * 16 / 9);
-      // Constrain height to viewport to prevent vertical overflow requiring scroll
-      const maxHeight = window.innerHeight * 0.75;
-      if (height > maxHeight) {
-        height = maxHeight;
-        width = Math.round(height * 9 / 16); // Recalculate width to maintain ratio
-      }
+      // Removed viewport constraint as per request
     }
     return { width, height };
   };
@@ -281,6 +364,33 @@ export const MemeCanvas = ({ imageUrl, textColor, fontSize, onColorChange, onFon
     fabricCanvas.setActiveObject(arrowPath);
     fabricCanvas.renderAll();
     toast.success("Arrow added!");
+  };
+
+  const applyPreset = (presetName: PresetName) => {
+    if (!fabricCanvas) return;
+    const activeObject = fabricCanvas.getActiveObject();
+    if (activeObject && activeObject instanceof IText) {
+      const preset = TEXT_PRESETS[presetName];
+      activeObject.set(preset);
+
+      // Sync state controls to match preset (optional, improves UX)
+      if (preset.fill && typeof preset.fill === 'string') onColorChange(preset.fill);
+      if (preset.stroke) setTextStrokeColor(preset.stroke);
+
+      fabricCanvas.renderAll();
+      toast.success(`Applied ${presetName} preset!`);
+      saveState(fabricCanvas);
+    } else {
+      // If nothing selected, add new text with preset
+      const preset = TEXT_PRESETS[presetName];
+      const text = new IText("PRESET TEXT", {
+        left: 150, top: 150, fontSize: 60, ...preset, selectable: true, editable: true
+      });
+      fabricCanvas.add(text);
+      fabricCanvas.setActiveObject(text);
+      fabricCanvas.renderAll();
+      saveState(fabricCanvas);
+    }
   };
 
   useEffect(() => {
@@ -492,36 +602,26 @@ export const MemeCanvas = ({ imageUrl, textColor, fontSize, onColorChange, onFon
           <Image className="w-3.5 h-3.5" />
           New
         </Button>
-        <Button onClick={downloadMeme} size="sm" className="btn-donate gap-1.5 text-white shrink-0 px-3 h-9">
-          <Download className="w-3.5 h-3.5" />
-        </Button>
-        <Button
-          onClick={handleMint}
-          disabled={isMinting}
-          size="sm"
-          className="btn-donate gap-1.5 text-white shrink-0 px-3 h-9 text-xs sm:text-sm"
-        >
-          {isMinting ? (
-            <>
-              <Loader2 className="w-3.5 h-3.5 animate-spin" />
-              Preparing...
-            </>
-          ) : (
-            <>
-              {isConfirmingTx ? "Confirming..." : (
-                <>
-                  <Coins className="w-3.5 h-3.5" />
-                  Mint on Base
-                </>
-              )}
-            </>
-          )}
-        </Button>
 
-        <Button onClick={handleBaseShare} disabled={isSharing} size="sm" className="btn-donate btn-share-base gap-1.5 text-white shrink-0 px-3 h-9 text-xs sm:text-sm">
-          {isSharing ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <div className="w-3.5 h-3.5 rounded-full bg-white/20 flex items-center justify-center text-[10px]">🔵</div>}
-          Share
-        </Button>
+        {/* Dropdown for Download / Mint / Share */}
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button size="sm" className="btn-donate gap-1.5 text-white shrink-0 px-3 h-9 text-xs sm:text-sm">
+              Mint <ChevronDown className="w-3.5 h-3.5" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent className="w-48 bg-slate-900 border-white/10 text-white">
+            <DropdownMenuItem onClick={downloadMeme} className="gap-2 cursor-pointer focus:bg-white/10 focus:text-white">
+              <Download className="w-4 h-4" /> Download
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={handleMint} disabled={isMinting} className="gap-2 cursor-pointer focus:bg-white/10 focus:text-white">
+              <Coins className="w-4 h-4" /> {isMinting ? "Preparing..." : "Mint on Base"}
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={handleBaseShare} disabled={isSharing} className="gap-2 cursor-pointer focus:bg-white/10 focus:text-white">
+              <Share2 className="w-4 h-4" /> Share
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
 
       {/* Editor Toolbar */}
@@ -601,7 +701,7 @@ export const MemeCanvas = ({ imageUrl, textColor, fontSize, onColorChange, onFon
           </div>
         </div>
 
-        {/* Row 3: Text Styles */}
+        {/* Row 3: Text Styles & Presets */}
         <div className="flex justify-center items-center gap-4 flex-wrap text-sm pt-1">
           <div className="flex items-center gap-2">
             <Label className="text-xs text-slate-300">TEXT</Label>
@@ -617,6 +717,28 @@ export const MemeCanvas = ({ imageUrl, textColor, fontSize, onColorChange, onFon
             </div>
           </div>
 
+          {/* PRESETS DROPDOWN */}
+          <div className="flex items-center gap-2">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" size="sm" className="h-7 text-xs gap-1 border-white/20 bg-white/5 hover:bg-white/10 text-slate-300">
+                  <Type className="w-3 h-3" /> PRESETS
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-48 bg-slate-900 border-white/10 text-white max-h-64 overflow-y-auto">
+                {Object.keys(TEXT_PRESETS).map((key) => (
+                  <DropdownMenuItem
+                    key={key}
+                    onClick={() => applyPreset(key as PresetName)}
+                    className="cursor-pointer hover:bg-white/10 focus:bg-white/10 text-xs py-2 capitalize"
+                  >
+                    {key}
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+
           <div className="flex items-center gap-2 min-w-[120px]">
             <span className="text-xs text-slate-300">SIZE</span>
             <Slider value={[fontSize]} onValueChange={(val) => onFontSizeChange(val[0])} min={12} max={120} step={1} className="w-28" />
@@ -629,9 +751,6 @@ export const MemeCanvas = ({ imageUrl, textColor, fontSize, onColorChange, onFon
           <canvas ref={canvasRef} className="w-full h-auto" />
         </div>
       </div>
-
-      {/* Mint Button Area */}
-
 
       <p className="text-center text-xs text-slate-500 animate-pulse">
         Double-click text to edit • Drag to move
