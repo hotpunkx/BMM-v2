@@ -1,7 +1,7 @@
 {
-  "id": "based-meme-maker",
-  "name": "Based Meme Maker",
-  "short_name": "Meme Maker",
+  "id": "meme-minter",
+  "name": "Meme Minter",
+  "short_name": "Meme Minter",
   "description": "Create, customize and share memes instantly on Base.",
   "start_url": ".",
   "display": "standalone",

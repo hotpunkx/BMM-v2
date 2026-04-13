@@ -92,12 +92,12 @@ All colors MUST be HSL.
   }
 }
 
-.based-float {
+.meme-float {
   animation: float 6s ease-in-out infinite;
 }
 
 
-/* Uiverse Button Styles - Adapted for based-meme-maker */
+/* Uiverse Button Styles - Adapted for Meme Minter */
 .animated-button {
   position: relative;
   display: flex;
@@ -248,7 +248,7 @@ All colors MUST be HSL.
   --btn-bg-color: hsla(0 0% 100% / 1);
 }
 
-/* From Uiverse.io by MuhammadHasann - Adapted for based-meme-maker */
+/* From Uiverse.io by MuhammadHasann - Adapted for Meme Minter */
 .container-button {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;

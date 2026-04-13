@@ -9,13 +9,13 @@
   },
   "miniapp": {
     "version": "1",
-    "name": "Based Meme Maker",
+    "name": "Meme Minter",
     "homeUrl": "https://mememinter.vercel.app/",
     "iconUrl": "https://mememinter.vercel.app/icon.png",
     "splashImageUrl": "https://mememinter.vercel.app/splash.png",
     "splashBackgroundColor": "#0A0E1A",
     "subtitle": "Make memes easily",
-    "description": "Create, customize and share memes instantly on Baseapp.",
+    "description": "Create, customize and share memes instantly on Meme Minter.",
     "screenshotUrls": [
       "https://mememinter.vercel.app/s1.png",
       "https://mememinter.vercel.app/s2.png",
@@ -29,7 +29,7 @@
     ],
     "heroImageUrl": "https://mememinter.vercel.app/og.png",
     "tagline": "Make your based memes",
-    "ogTitle": "Based Meme Maker",
+    "ogTitle": "Meme Minter",
     "ogDescription": "Create based memes instantly.",
     "ogImageUrl": "https://mememinter.vercel.app/og.png",
     "noindex": true

@@ -129,11 +129,11 @@ const Index = () => {
 
         <div className="text-center space-y-4 max-w-lg bg-slate-900/60 backdrop-blur-md border border-white/10 rounded-3xl p-8 shadow-[0_0_40px_-10px_rgba(59,130,246,0.5)]">
           <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-cyan-300 to-blue-500 drop-shadow-[0_0_20px_rgba(59,130,246,0.8)] filter font-slackey">
-            Meme Maker
+            Meme Minter
           </h1>
           {!uploadedImage && (
             <p className="text-slate-300 text-sm tracking-wide font-medium drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
-              YOUR GATEWAY TO <span className="text-blue-300 drop-shadow-[0_0_10px_rgba(147,197,253,0.8)]">BASED</span> MEMES.
+              YOUR GATEWAY TO <span className="text-blue-300 drop-shadow-[0_0_10px_rgba(147,197,253,0.8)]">MEME MINTER</span>.
             </p>
           )}
         </div>

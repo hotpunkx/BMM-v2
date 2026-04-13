@@ -12,7 +12,7 @@ export const uploadFileToIPFS = async (file: File) => {
     formData.append('file', file);
 
     const pinataMetadata = JSON.stringify({
-        name: "Based Meme Image",
+        name: "Meme Minter Image",
     });
     formData.append('pinataMetadata', pinataMetadata);
 
@@ -46,13 +46,13 @@ export const uploadToIPFS = async (file: File) => {
 
         // 2. Create & Upload Metadata
         const metadata = {
-            name: "Based Meme",
-            description: "Created with Based Meme Maker on Base",
+            name: "Meme Minter",
+            description: "Created with Meme Minter on Base",
             image: imageUrl,
-            external_url: "https://mememakerbased.vercel.app/",
+            external_url: "https://mememinter.vercel.app/",
             attributes: [
                 { trait_type: "Creator", value: "Hotpunk" },
-                { trait_type: "App", value: "Based Meme Maker" }
+                { trait_type: "App", value: "Meme Minter" }
             ]
         };
 

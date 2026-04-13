@@ -1,8 +1,8 @@
-# Based Meme Maker 🔵
+# Meme Minter 🔵
 
 A powerful, decentralized meme generator built on the **Base** blockchain. Create, store, and mint your memes entirely on-chain.
 
-![Based Meme Maker](public/og.png)
+![Meme Minter](public/og.png)
 
 ## 🚀 Key Features
 

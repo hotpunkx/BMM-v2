@@ -39,7 +39,7 @@ const Share = () => {
                 <Helmet>
                     <title>Based Meme</title>
                     <meta property="og:title" content="Check out this Based Meme!" />
-                    <meta property="og:description" content="Created with Based Meme Maker" />
+                    <meta property="og:description" content="Created with Meme Minter" />
                     <meta property="og:image" content={imageUrl} />
                     <meta property="og:url" content={window.location.href} />
                     <meta name="twitter:card" content="summary_large_image" />
