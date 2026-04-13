@@ -62,7 +62,7 @@ export const ImageUpload = ({ onImageUpload }: ImageUploadProps) => {
           <Upload className="w-8 h-8 text-white" />
         </div>
 
-        <h3 className="text-lg font-semibold text-white mb-1">Click or drag to upload image</h3>
+        <h3 className="text-lg font-semibold text-white mb-1">Click to upload image</h3>
         <p className="text-xs text-slate-500 font-mono mb-8">PNG, JPG, GIF UP TO 10MB</p>
 
         <input

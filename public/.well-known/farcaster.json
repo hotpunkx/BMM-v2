@@ -16,12 +16,18 @@
     "splashBackgroundColor": "#0A0E1A",
     "subtitle": "Make memes easily",
     "description": "Create, customize and share memes instantly on Baseapp.",
+    "screenshotUrls": [
+      "https://mememinter.vercel.app/s1.png",
+      "https://mememinter.vercel.app/s2.png",
+      "https://mememinter.vercel.app/s3.png"
+    ],
     "primaryCategory": "entertainment",
     "tags": [
       "memes",
       "fun",
       "base"
     ],
+    "heroImageUrl": "https://mememinter.vercel.app/og.png",
     "tagline": "Make your based memes",
     "ogTitle": "Based Meme Maker",
     "ogDescription": "Create based memes instantly.",
